@@ -1,0 +1,388 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Check if there is already an active login screen and destroy it if it exists
+if playerGui:FindFirstChild("LoginScreen") then
+    playerGui.LoginScreen:Destroy()
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "LoginScreen"
+screenGui.Parent = playerGui
+
+-- Main frame for the login UI
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.3, 0, 0.4, 0)
+frame.Position = UDim2.new(0.35, 0, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark grey background
+frame.BorderSizePixel = 0
+frame.Name = "LoginFrame"
+frame.Parent = screenGui
+
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 15)  -- More rounded corners
+frameCorner.Parent = frame
+
+-- Title bar
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0.1, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)  -- Darker grey for title bar
+titleBar.BorderSizePixel = 0
+titleBar.Parent = frame
+
+local titleBarCorner = Instance.new("UICorner")
+titleBarCorner.CornerRadius = UDim.new(0, 15)
+titleBarCorner.Parent = titleBar
+
+-- Title text
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0.8, 0, 1, 0)
+titleLabel.Position = UDim2.new(0.05, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Login Screen"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text for title
+titleLabel.Font = Enum.Font.GothamBold  -- Modern bold font
+titleLabel.TextSize = 24
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = titleBar
+
+-- Close button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0.1, 0, 1, 0)
+closeButton.Position = UDim2.new(0.9, 0, 0, 0)
+closeButton.Text = "X"
+closeButton.BackgroundTransparency = 1
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text for close button
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 24
+closeButton.Parent = titleBar
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- Username input box
+local usernameBox = Instance.new("TextBox")
+usernameBox.Size = UDim2.new(0.8, 0, 0.1, 0)
+usernameBox.Position = UDim2.new(0.1, 0, 0.25, 0)
+usernameBox.PlaceholderText = "Enter Username"
+usernameBox.Text = ""
+usernameBox.ClearTextOnFocus = true
+usernameBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Darker grey background for input fields
+usernameBox.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+usernameBox.Font = Enum.Font.SourceSans
+usernameBox.TextSize = 18
+usernameBox.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+usernameBox.Parent = frame
+
+local usernameCorner = Instance.new("UICorner")
+usernameCorner.CornerRadius = UDim.new(0, 10)
+usernameCorner.Parent = usernameBox
+
+-- Password input box
+local passwordBox = Instance.new("TextBox")
+passwordBox.Size = UDim2.new(0.8, 0, 0.1, 0)
+passwordBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+passwordBox.PlaceholderText = "Enter Password"
+passwordBox.Text = ""
+passwordBox.ClearTextOnFocus = true
+passwordBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Same style as username box
+passwordBox.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+passwordBox.Font = Enum.Font.SourceSans
+passwordBox.TextSize = 18
+passwordBox.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+passwordBox.Parent = frame
+
+local passwordCorner = Instance.new("UICorner")
+passwordCorner.CornerRadius = UDim.new(0, 10)
+passwordCorner.Parent = passwordBox
+
+-- Feedback label for login status
+local feedbackLabel = Instance.new("TextLabel")
+feedbackLabel.Size = UDim2.new(0.8, 0, 0.1, 0)
+feedbackLabel.Position = UDim2.new(0.1, 0, 0.7, 0)
+feedbackLabel.BackgroundTransparency = 1
+feedbackLabel.Text = ""
+feedbackLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text for feedback
+feedbackLabel.Font = Enum.Font.SourceSans
+feedbackLabel.TextSize = 16
+feedbackLabel.TextXAlignment = Enum.TextXAlignment.Center
+feedbackLabel.Parent = frame
+
+-- Login button
+local loginButton = Instance.new("TextButton")
+loginButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+loginButton.Position = UDim2.new(0.1, 0, 0.60, 0)
+loginButton.Text = "Log In"
+loginButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)  -- Very dark grey for button
+loginButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+loginButton.Font = Enum.Font.GothamBold
+loginButton.TextSize = 18
+loginButton.Parent = frame
+
+local loginButtonCorner = Instance.new("UICorner")
+loginButtonCorner.CornerRadius = UDim.new(0, 10)
+loginButtonCorner.Parent = loginButton
+
+-- Hover effects for the login button
+loginButton.MouseEnter:Connect(function()
+    loginButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)  -- Slightly lighter grey on hover
+end)
+
+loginButton.MouseLeave:Connect(function()
+    loginButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)  -- Original dark grey
+end)
+
+-- Whitelist for login
+local HttpService = game:GetService("HttpService")
+local tweenService = game:GetService("TweenService")
+
+local whitelistUrl = "https://raw.githubusercontent.com/elytra993/thing/refs/heads/main/whitelist"
+
+-- Fetch and decode the whitelist
+local success, decodedWhitelist = pcall(function()
+    local response = game:HttpGet(whitelistUrl)
+    return HttpService:JSONDecode(response)
+end)
+
+if not success then
+    warn("Failed to fetch or decode the whitelist.")
+    decodedWhitelist = {} -- Fallback to an empty table if fetching fails
+end
+
+-- Whitelist for login
+local whitelist = decodedWhitelist
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Check if there is already an active login screen and destroy it if it exists
+if playerGui:FindFirstChild("LoginScreen") then
+    playerGui.LoginScreen:Destroy()
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "LoginScreen"
+screenGui.Parent = playerGui
+
+-- Main frame for the login UI
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.3, 0, 0.4, 0)
+frame.Position = UDim2.new(0.35, 0, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+frame.Name = "LoginFrame"
+frame.Parent = screenGui
+
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 15)
+frameCorner.Parent = frame
+
+-- Title bar
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0.1, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = frame
+
+local titleBarCorner = Instance.new("UICorner")
+titleBarCorner.CornerRadius = UDim.new(0, 15)
+titleBarCorner.Parent = titleBar
+
+-- Title text
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0.8, 0, 1, 0)
+titleLabel.Position = UDim2.new(0.05, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Login Screen"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 24
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = titleBar
+
+-- Close button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0.1, 0, 1, 0)
+closeButton.Position = UDim2.new(0.9, 0, 0, 0)
+closeButton.Text = "X"
+closeButton.BackgroundTransparency = 1
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 24
+closeButton.Parent = titleBar
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- Username input box
+local usernameBox = Instance.new("TextBox")
+usernameBox.Size = UDim2.new(0.8, 0, 0.1, 0)
+usernameBox.Position = UDim2.new(0.1, 0, 0.25, 0)
+usernameBox.PlaceholderText = "Enter Username"
+usernameBox.Text = ""
+usernameBox.ClearTextOnFocus = true
+usernameBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+usernameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+usernameBox.Font = Enum.Font.SourceSans
+usernameBox.TextSize = 18
+usernameBox.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+usernameBox.Parent = frame
+
+local usernameCorner = Instance.new("UICorner")
+usernameCorner.CornerRadius = UDim.new(0, 10)
+usernameCorner.Parent = usernameBox
+
+-- Password input box
+local passwordBox = Instance.new("TextBox")
+passwordBox.Size = UDim2.new(0.8, 0, 0.1, 0)
+passwordBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+passwordBox.PlaceholderText = "Enter Password"
+passwordBox.Text = ""
+passwordBox.ClearTextOnFocus = true
+passwordBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+passwordBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+passwordBox.Font = Enum.Font.SourceSans
+passwordBox.TextSize = 18
+passwordBox.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+passwordBox.Parent = frame
+
+local passwordCorner = Instance.new("UICorner")
+passwordCorner.CornerRadius = UDim.new(0, 10)
+passwordCorner.Parent = passwordBox
+
+-- Feedback label for login status
+local feedbackLabel = Instance.new("TextLabel")
+feedbackLabel.Size = UDim2.new(0.8, 0, 0.1, 0)
+feedbackLabel.Position = UDim2.new(0.1, 0, 0.7, 0)
+feedbackLabel.BackgroundTransparency = 1
+feedbackLabel.Text = ""
+feedbackLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+feedbackLabel.Font = Enum.Font.SourceSans
+feedbackLabel.TextSize = 16
+feedbackLabel.TextXAlignment = Enum.TextXAlignment.Center
+feedbackLabel.Parent = frame
+
+-- Login button
+local loginButton = Instance.new("TextButton")
+loginButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+loginButton.Position = UDim2.new(0.1, 0, 0.60, 0)
+loginButton.Text = "Log In"
+loginButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+loginButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+loginButton.Font = Enum.Font.GothamBold
+loginButton.TextSize = 18
+loginButton.Parent = frame
+
+local loginButtonCorner = Instance.new("UICorner")
+loginButtonCorner.CornerRadius = UDim.new(0, 10)
+loginButtonCorner.Parent = loginButton
+
+-- Hover effects for the login button
+loginButton.MouseEnter:Connect(function()
+    loginButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+end)
+
+loginButton.MouseLeave:Connect(function()
+    loginButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+end)
+
+-- Function to handle login attempts
+local failedAttempts = 0
+
+local function onLoginButtonClick()
+    local username = usernameBox.Text
+    local password = passwordBox.Text
+
+    feedbackLabel.Text = "Processing..."
+    feedbackLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    wait(2)
+
+    if whitelist[username] and whitelist[username] == password then
+        feedbackLabel.Text = "Login Successful!"
+        feedbackLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+        -- Load and execute the external script
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/elytra993/thing/refs/heads/main/Neon_Text_ScriptHub.lua"))()
+
+        local goal = {Position = UDim2.new(0.5, 0, 0.5, 0), Size = UDim2.new(0, 0, 0, 0)}
+        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Circular, Enum.EasingDirection.In)
+        local tween = tweenService:Create(frame, tweenInfo, goal)
+        tween:Play()
+
+        tween.Completed:Connect(function()
+            screenGui:Destroy()
+        end)
+
+        print("Login successful!")
+    else
+        failedAttempts = failedAttempts + 1
+
+        if failedAttempts == 1 then
+            feedbackLabel.Text = "Incorrect username or password. 2 tries left."
+        elseif failedAttempts == 2 then
+            feedbackLabel.Text = "Incorrect username or password. 1 try left."
+        elseif failedAttempts >= 3 then
+            feedbackLabel.Text = "Too many failed attempts. Kicking..."
+            wait(2)
+            player:Kick("Man too many attempts, Just Buy it") -- Kick the player
+            return
+        end
+        
+        feedbackLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Red text for failure
+
+        local shakeTweenInfo = TweenInfo.new(0.03, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, 6, true)
+        local shakeTween = tweenService:Create(frame, shakeTweenInfo, {Position = UDim2.new(0.3, math.random(-10, 10), 0.3, math.random(-10, 10))})
+        shakeTween:Play()
+
+        print("Invalid username or password.")
+    end
+end
+
+loginButton.MouseButton1Click:Connect(onLoginButtonClick)
+
+passwordBox.Focused:Connect(function()
+    feedbackLabel.Visible = false
+end)
+
+passwordBox.FocusLost:Connect(function()
+    feedbackLabel.Visible = true
+end)
+
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+titleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+titleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        updateInput(input)
+    end
+end)
